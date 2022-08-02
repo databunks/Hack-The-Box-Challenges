@@ -44,34 +44,40 @@ print("Leaked Cipher Bytes: " + str(leakedCipherBytes))
 # then convert to byte array
 leakedCipherBytes = bytearray(leakedCipherBytes)
 
-# xor the cipher byte you want to change with the o
-flippedCipherByte = chr(leakedCipherBytes[0] ^ ord("c") ^ ord("a"))
+# xor the cipher byte you want to change with the ord of the actual character and the ord of the character you want to replace
+flippedCipherChar = chr(leakedCipherBytes[0] ^ ord("c") ^ ord("a"))
 
-print("og flip: "  + str(flippedCipherByte))
-
+# remove the first byte
 del(leakedCipherBytes[0])
 
 print("After del: " + str(leakedCipherBytes))
 
-flippedCipherByte = flippedCipherByte.encode()
+# turn the flipped char into a byte
+flippedCipherByte = flippedCipherChar.encode()
 
 print("Encoded flipped cipher byte: " + str(flippedCipherByte))
 
+# turn the flipped cipher byte into a byte array to easily manipulate it
 flippedCipherByte = bytearray(flippedCipherByte)
 
+# add to the flipped cipher byte array to have the whole ciphertext in the byte array
 flippedCipherByte.extend(leakedCipherBytes)
 
+# convert back to bytes
 finalCipherBytes = bytes(flippedCipherByte)
 
 print("Final cipher bytes: " + str(finalCipherBytes))
 
-flippedCipherByte = flippedCipherByte.hex()
+# turn it back into hex
+flippedCipherHex = flippedCipherByte.hex()
 
-print("Final hex: " + str(flippedCipherByte))
+print("Final hex: " + str(flippedCipherHex))
 
-s.send(flippedCipherByte.encode())
+# send it off
+s.send(flippedCipherHex.encode())
 result = s.recv(4096).decode().strip()
 
+# woohoo flag is gotten
 print(result)
 
 
